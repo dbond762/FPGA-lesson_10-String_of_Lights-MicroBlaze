@@ -3,12 +3,12 @@
 * SPDX-License-Identifier: MIT
 ******************************************************************************/
 
-_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
+_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x1000;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x1000;
 
 MEMORY
 {
-	microblaze_0_local_memory_dlmb_bram_if_cntlr_memory_0 : ORIGIN = 0x50, LENGTH = 0x3fb0
+	microblaze_0_local_memory_dlmb_bram_if_cntlr_memory_0 : ORIGIN = 0x50, LENGTH = 0xffb0
 }
 
 /* Specify the default entry point to the program */
