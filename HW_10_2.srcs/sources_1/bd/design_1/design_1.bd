@@ -962,6 +962,21 @@
           }
         }
       }
+    },
+    "elf_association": {
+      "file": {
+        "name": "..\\..\\..\\..\\app_component\\build\\app_component.elf",
+        "type": "ELF",
+        "checksum": "1981571577",
+        "IsVisible": "1",
+        "ScopedToRef": "design_1",
+        "ScopedToCell": [
+          "microblaze_0"
+        ],
+        "UsedIn": [
+          "simulation"
+        ]
+      }
     }
   }
 }

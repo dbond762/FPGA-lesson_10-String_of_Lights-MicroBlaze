@@ -240,7 +240,7 @@ lib_config:
       name: XILTIMER_tick_timer
       permission: read_write
       type: string
-      value: axi_timer_0
+      value: None
       default: None
       options:
       - None

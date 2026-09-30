@@ -3,7 +3,7 @@
 #include "xil_printf.h"
 #include <xil_types.h>
 #include <xstatus.h>
-#include "xiltimer.h"
+#include "xtmrctr.h"
 #include "xinterrupt_wrap.h"
 
 #include "rotate.h"
@@ -22,7 +22,9 @@
 #define BTN_DIRECTION_MASK ( ( 1U << BTN_WIDTH ) - 1U )   // 4 входи
 #define SW_DIRECTION_MASK  ( ( 1U << SW_WIDTH  ) - 1U )   // 2 входи
 
-#define TICK_MS         10U
+#define TICK_US   10U  // 10 us for simulation. For real use change it
+#define TICKS     ( ( XPAR_XTMRCTR_0_CLOCK_FREQUENCY / 1000000U ) * TICK_US - 2 )
+
 #define LED_CHANGE_STEP 10U
 #define LED_MIN_TICKS   10U
 #define LED_MAX_TICKS   50U
@@ -32,21 +34,23 @@
 #define LED_DEFAULT_TICKS 20U
 
 #define DIR_SW_MASK     0x1
-#define SLOWER_BTN_MASK 0x1
+#define FASTER_BTN_MASK 0x1
 #define PAUSE_BTN_MASK  0x4
 #define PLAY_BTN_MASK   0x2
-#define FASTER_BTN_MASK 0x8
+#define SLOWER_BTN_MASK 0x8
 
 static volatile u32 tick          = 0U;
 static volatile u32 btn_edge_tick = 0U;
 static volatile u8  btn_pending   = FALSE;
 
+static XTmrCtr tmr;
+
 static XGpio led_gpio, btn_gpio, sw_gpio;
 
-static void TickHandler( void *CallBackRef, u32 StatusEvent )
+static void TickHandler( void *CallBackRef, u8 TmrCtrNumber )
 {
     ( void )CallBackRef;
-    ( void )StatusEvent;
+    ( void )TmrCtrNumber;
     
     tick++;
 }
@@ -95,8 +99,14 @@ static XStatus SetupGpio( XGpio *gpio, UINTPTR base, u32 dir, u32 with_interrupt
 
 XStatus init( void )
 {
-    XTimer_SetInterval( TICK_MS );
-    XTimer_SetHandler( TickHandler, NULL, XINTERRUPT_DEFAULT_PRIORITY );
+    XTmrCtr_Initialize( &tmr, XPAR_XTMRCTR_0_BASEADDR );
+    XTmrCtr_SetHandler( &tmr, TickHandler, &tmr );
+    XTmrCtr_SetOptions( &tmr, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION | XTC_DOWN_COUNT_OPTION );
+    XTmrCtr_SetResetValue( &tmr, 0, TICKS );
+    XSetupInterruptSystem( &tmr, XTmrCtr_InterruptHandler,
+                           tmr.Config.IntrId, tmr.Config.IntrParent,
+                           XINTERRUPT_DEFAULT_PRIORITY );
+    XTmrCtr_Start( &tmr, 0 );
 
     XStatus status = XST_SUCCESS;
     
@@ -137,6 +147,8 @@ int main( void )
     u32 led_step_ticks = LED_DEFAULT_TICKS;
     u32 led_started    = TRUE;
 
+    XGpio_DiscreteWrite( &led_gpio, GPIO_CH, led );
+
     u32 btn       = 0x0U;
     u32 sw        = XGpio_DiscreteRead( &sw_gpio, GPIO_CH );
     u32 dir_right = sw & DIR_SW_MASK;
@@ -159,7 +171,7 @@ int main( void )
             dir_right = sw & DIR_SW_MASK;
 
             btn = XGpio_DiscreteRead( &btn_gpio, GPIO_CH );
-            if ( btn & SLOWER_BTN_MASK )
+            if ( btn & FASTER_BTN_MASK )
             {
                 if ( led_step_ticks > LED_MIN_TICKS )
                 {
@@ -175,7 +187,7 @@ int main( void )
                 led_started   = TRUE;
                 last_led_tick = tick;
             }
-            else if ( btn & FASTER_BTN_MASK )
+            else if ( btn & SLOWER_BTN_MASK )
             {
                 if ( led_step_ticks < LED_MAX_TICKS )
                 {
