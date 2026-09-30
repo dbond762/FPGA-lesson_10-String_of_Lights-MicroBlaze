@@ -1,0 +1,25 @@
+Command: cmd.exe /C set CC= && set CXX= && empyro.bat build_app -s d:\FPGA\HW_10_2\app_component\src -b d:\FPGA\HW_10_2\app_component\build
+[INFO]: Starting Application build process
+[INFO]: Building Application
+[1/4] ==========Application Build Information ==========
+
+Compiler Flags:   -mlittle-endian -mxl-soft-mul -mcpu=v11.0 -DSDT  -MMD -MP -specs=D:/FPGA/HW_10_2/p
+latform/export/platform/sw/standalone_microblaze_0/Xilinx.spec -ID:/FPGA/HW_10_2/platform/export/pla
+tform/sw/standalone_microblaze_0/include -Wall -Wextra      -O0  -g3     -U__clang__  
+
+Linker Flags:   -Wl,--no-relax  -Wl,--gc-sections      -Wl,-T -Wl,"D:/FPGA/HW_10_2/app_component/src
+/lscript.ld" -L"D:/FPGA/HW_10_2/app_component/src/" -L"D:/FPGA/HW_10_2/platform/export/platform/sw/s
+
+tandalone_microblaze_0/lib/" -L"/" -Wl,--start-group,-lxilstandalone,-lxiltimer,-lgloss,-lxil,-lgcc,
+
+-lc -Wl,--end-group
+
+
+===========================================
+[2/4] Building C object CMakeFiles/app_component.elf.dir/rotate.c.obj
+[3/4] Building C object CMakeFiles/app_component.elf.dir/main.c.obj
+[4/4] Linking C executable app_component.elf
+   text	   data	    bss	    dec	    hex	filename
+
+  15500	    714	   8858	  25072	   61f0	app_component.elf
+

@@ -1,6 +1,6 @@
 ###############  Vivado  ###############
 *.jou
-*.log
+# *.log
 *.str
 *.backup.jou
 *.backup.log
@@ -50,13 +50,16 @@ RemoteSystemsTempFiles/
 
 # Vitis Unified: компоненты приложения и платформы
 _ide/
-build/
+build/*
 Debug/
 Release/
-logs/
+logs/*
 .sdk/
 compile_commands.json
 .clangd
+
+# build log
+!logs/build.log
 
 # Сгенерированное содержимое платформы
 export/
