@@ -4,10 +4,9 @@
 module tb_design_1_wrapper;
 
     // ---- Такт і reset --
-    // ---- Диференційний такт --
-    reg  diff_clock_rtl_0_clk_p = 0;
-    wire diff_clock_rtl_0_clk_n = ~diff_clock_rtl_0_clk_p;   // завжди протифазний до clk_p
-    reg  reset_rtl_0 = 1;
+    // ---- Такт 125 MHz (як на PYNQ-Z2) --
+    reg  sys_clk = 0;
+    reg  reset_rtl_0 = 1;   // більше не підключений до DUT (reset у wrapper зав'язаний на 1)
     
     // ---- Зовнішні GPIO-порти
     wire [3:0] LED_tri_o;
@@ -16,16 +15,14 @@ module tb_design_1_wrapper;
     
     // ---- Інстанціювання ПОВНОЇ верхньої обгортк
     design_1_wrapper dut (
-        .diff_clock_rtl_0_clk_p(diff_clock_rtl_0_clk_p),
-        .diff_clock_rtl_0_clk_n(diff_clock_rtl_0_clk_n),
-        .reset_rtl_0(reset_rtl_0),
+        .sys_clk(sys_clk),
         .LED_tri_o(LED_tri_o),
         .BTN_tri_i(BTN_tri_i),
         .SW_tri_i(SW_tri_i)
     );
     
     // ---- Генерація такту
-    always #0.005 diff_clock_rtl_0_clk_p = ~diff_clock_rtl_0_clk_p;
+    always #0.004 sys_clk = ~sys_clk;   // 8 ns період
     
     int fails = 0;
     

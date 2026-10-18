@@ -22,7 +22,11 @@
 #define BTN_DIRECTION_MASK ( ( 1U << BTN_WIDTH ) - 1U )   // 4 входи
 #define SW_DIRECTION_MASK  ( ( 1U << SW_WIDTH  ) - 1U )   // 2 входи
 
-#define TICK_US   10U  // 10 us for simulation. For real use change it
+#ifdef SIMULATION
+    #define TICK_US   10U
+#else
+    #define TICK_US   10000U
+#endif
 #define TICKS     ( ( XPAR_XTMRCTR_0_CLOCK_FREQUENCY / 1000000U ) * TICK_US - 2 )
 
 #define LED_CHANGE_STEP 10U

@@ -1,3 +1,7 @@
+## Clock 125 MHz (PYNQ-Z2 sysclk)
+set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports sys_clk]
+create_clock -name sys_clk -period 8.000 -waveform {0.000 4.000} [get_ports sys_clk]
+
 ## Switches
 set_property -dict {PACKAGE_PIN M20 IOSTANDARD LVCMOS33} [get_ports {SW_tri_i[0]}]
 set_property -dict {PACKAGE_PIN M19 IOSTANDARD LVCMOS33} [get_ports {SW_tri_i[1]}]
